@@ -1,23 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, Image } from "react-native";
 
 class App extends Component {
   state = {
-    user: {},
+    user: null,
     text: {}
   };
 
   getUser = value => {
-    // console.log("button clicked", value);
     fetch(`http://api.github.com/users/${value}`)
       .then(response => response.json())
-      .then(data => console.log(data.name));
+      .then(data =>
+        this.setState({ user: data }, () => {
+          console.log(this.state.user);
+        })
+      );
   };
-
-  // getUser = () => {
-  //   const name = this.ref.name.value;
-  //   console.log(name);
-  // };
 
   render() {
     return (
@@ -34,6 +32,20 @@ class App extends Component {
           }}
         />
         {/* <Button onPress={() => this.getUser} title="See user" /> */}
+        {this.state.user && this.state.user !== null ? (
+          <View>
+            <Text>{this.state.user.name}</Text>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={{
+                uri: this.state.user.avatar_url
+              }}
+            />
+          </View>
+        ) : (
+          <Text>No results</Text>
+        )}
+        {/* <Text>aaa</Text> */}
       </View>
     );
   }
