@@ -7,6 +7,16 @@ class App extends Component {
     text: {}
   };
 
+  getRepos = user => {
+    fetch(`http://api.github.com/users/${user}/repos`)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({ user: data }, () => {
+          console.log(this.state.user);
+        })
+      );
+  };
+
   getUser = value => {
     fetch(`http://api.github.com/users/${value}`)
       .then(response => response.json())
@@ -35,12 +45,17 @@ class App extends Component {
         {this.state.user && this.state.user !== null ? (
           <View>
             <Text>{this.state.user.name}</Text>
+            <Text>{this.state.user.bio}</Text>
+            <Text>{this.state.user.location}</Text>
             <Image
               style={{ width: 50, height: 50 }}
               source={{
                 uri: this.state.user.avatar_url
               }}
             />
+  <Text>Numbers of repos: {this.state.user.public_repos}</Text>
+        <Button onPress={this.state.user.login => this.getRepos} title="See Repos Info" />
+
           </View>
         ) : (
           <Text>No results</Text>
