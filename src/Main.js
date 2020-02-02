@@ -1,8 +1,27 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard
+} from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 import Resume from "./Resume.js";
-import calculateLanguagePercents from "./languagePerc.js";
+import calculateLanguagePercents from "./utils/languagePerc.js";
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback
+    onPress={() => {
+      Keyboard.dismiss();
+    }}
+  >
+    {children}
+  </TouchableWithoutFeedback>
+);
 
 class Main extends Component {
   state = {
@@ -32,23 +51,19 @@ class Main extends Component {
     let uniqueLanguages = [...new Set(languages)];
 
     const result = calculateLanguagePercents(languages, uniqueLanguages);
-    let languageResult = [];
 
     this.setState(
       { repos: allRepos, modalVisible: true, languages: result },
-      () => {}
+      () => {
+        // console.log("what appears here repos", this.state.repos);
+      }
     );
   }
 
   getUser = value => {
-    console.log("URL", `http://api.github.com/users/${value}`);
     fetch(`http://api.github.com/users/${value}`)
       .then(response => response.json())
-      .then(data =>
-        this.setState({ user: data }, () => {
-          console.log("USER", this.state.user);
-        })
-      );
+      .then(data => this.setState({ user: data }, () => {}));
   };
 
   closeModal = () => {
@@ -58,10 +73,21 @@ class Main extends Component {
   render() {
     const { user, modalVisible, repos, languages } = this.state;
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }}>
+      <DismissKeyboard>
         <View style={styles.container}>
           <Text style={{ textAlign: "center", fontSize: 20, marginBottom: 20 }}>
             GitHub Resume Generator
+          </Text>
+
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              marginBottom: 20,
+              maxWidth: 250
+            }}
+          >
+            Feeling curious? Search for a Github user
           </Text>
           <TextInput
             onChangeText={value => this.getUser(value)}
@@ -72,7 +98,7 @@ class Main extends Component {
               borderColor: "gray",
               borderWidth: 1,
               textAlign: "center",
-              marginBottom: 10
+              marginBottom: 20
             }}
           />
           {user && user.message !== "Not Found" && (
@@ -91,24 +117,25 @@ class Main extends Component {
                 <Text
                   style={{
                     textAlign: "center",
-                    fontSize: 15,
-                    marginBottom: 10
+                    fontSize: 18,
+                    marginBottom: 12
                   }}
                 >
                   This user has no name ¯\_(ツ)_/¯
                 </Text>
               )}
-
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 12,
-                  marginBottom: 10,
-                  maxWidth: 250
-                }}
-              >
-                {user.bio}
-              </Text>
+              {user.bio && (
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: 12,
+                    marginBottom: 10,
+                    maxWidth: 250
+                  }}
+                >
+                  {user.bio}
+                </Text>
+              )}
               <View
                 style={{
                   alignItems: "center",
@@ -119,8 +146,7 @@ class Main extends Component {
                   style={{
                     width: 150,
                     height: 150,
-                    margin: "auto",
-                    marginBottom: 10
+                    marginBottom: 15
                   }}
                   source={{
                     uri: user.avatar_url
@@ -132,14 +158,14 @@ class Main extends Component {
                   style={{
                     textAlign: "center",
                     fontSize: 12,
-                    marginBottom: 10
+                    marginBottom: 15
                   }}
                 >
                   Numbers of repos: {user.public_repos}
                 </Text>
                 <View>
                   <Button
-                    color="#12cad6"
+                    color="#0f4c75"
                     title="Generate Resume"
                     onPress={() => this.getRepos()}
                   ></Button>
@@ -160,7 +186,7 @@ class Main extends Component {
             languages={languages}
           />
         </View>
-      </KeyboardAvoidingView>
+      </DismissKeyboard>
     );
   }
 }

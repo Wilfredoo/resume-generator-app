@@ -18,6 +18,10 @@ function calculateLanguagePercents(languages, uniqueLanguages) {
     languageResultArray.push(languageResult);
     return languageResultArray;
   });
+  result.sort((a, b) => {
+    return b[1] - a[1];
+  });
+
   return result;
 }
 

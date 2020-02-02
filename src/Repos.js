@@ -7,9 +7,9 @@ function Repos(props) {
   function render() {
     const { repos } = props;
     return (
-      <ScrollView style={styles.repos}>
-        <View style={{ marginBottom: 10, paddingBottom: 70 }}>
-          <View style={styles.separator} />
+      <View>
+        <View style={styles.separator} />
+        <View style={{ marginBottom: 20, paddingBottom: 70 }}>
           {repos &&
             repos.slice(0, 5).map(data => {
               return (
@@ -21,7 +21,7 @@ function Repos(props) {
                       alignItems: "center"
                     }}
                   >
-                    <Text style={{ fontSize: 15, color: "#fa163f" }}>
+                    <Text style={{ fontSize: 15, color: "#ff80b0" }}>
                       {data[0]}
                     </Text>
                     <Text style={{ fontSize: 15 }}>
@@ -32,8 +32,10 @@ function Repos(props) {
                 </View>
               );
             })}
+
+          {repos.length === 0 && <Text>This user has no repositories</Text>}
         </View>
-      </ScrollView>
+      </View>
     );
   }
   return render();

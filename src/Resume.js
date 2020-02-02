@@ -35,6 +35,7 @@ function Resume(props) {
                         <Text
                           style={{
                             fontSize: 25,
+                            color: "#35495e",
                             fontWeight: "bold"
                           }}
                         >
@@ -111,6 +112,7 @@ function Resume(props) {
                     style={{
                       fontSize: 20,
                       fontWeight: "bold",
+                      color: "#35495e",
                       marginTop: 15
                     }}
                   >
