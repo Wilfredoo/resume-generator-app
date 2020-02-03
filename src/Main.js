@@ -9,9 +9,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
 import Resume from "./Resume.js";
-import calculateLanguagePercents from "./utils/languagePerc.js";
+import calculateLanguagePercents from "./utils/languagePercent.js";
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback
@@ -54,9 +53,7 @@ class Main extends Component {
 
     this.setState(
       { repos: allRepos, modalVisible: true, languages: result },
-      () => {
-        // console.log("what appears here repos", this.state.repos);
-      }
+      () => {}
     );
   }
 
@@ -75,92 +72,36 @@ class Main extends Component {
     return (
       <DismissKeyboard>
         <View style={styles.container}>
-          <Text style={{ textAlign: "center", fontSize: 20, marginBottom: 20 }}>
-            GitHub Resume Generator
-          </Text>
+          <Text style={styles.title}>GitHub Resume Generator</Text>
 
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 12,
-              marginBottom: 20,
-              maxWidth: 250
-            }}
-          >
+          <Text style={styles.text}>
             Feeling curious? Search for a Github user
           </Text>
           <TextInput
             onChangeText={value => this.getUser(value)}
             placeholder="Enter a username"
-            style={{
-              height: 40,
-              width: 200,
-              borderColor: "gray",
-              borderWidth: 1,
-              textAlign: "center",
-              marginBottom: 20
-            }}
+            style={styles.input}
           />
           {user && user.message !== "Not Found" && (
             <View>
               {user.name ? (
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 15,
-                    marginBottom: 10
-                  }}
-                >
-                  {user.name}
-                </Text>
+                <Text style={styles.textName}>{user.name}</Text>
               ) : (
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 18,
-                    marginBottom: 12
-                  }}
-                >
+                <Text style={styles.textName}>
                   This user has no name ¯\_(ツ)_/¯
                 </Text>
               )}
-              {user.bio && (
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 12,
-                    marginBottom: 10,
-                    maxWidth: 250
-                  }}
-                >
-                  {user.bio}
-                </Text>
-              )}
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
+              {user.bio && <Text style={styles.bio}>{user.bio}</Text>}
+              <View style={styles.imageContainer}>
                 <Image
-                  style={{
-                    width: 150,
-                    height: 150,
-                    marginBottom: 15
-                  }}
+                  style={styles.image}
                   source={{
                     uri: user.avatar_url
                   }}
                 />
               </View>
               <View>
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 12,
-                    marginBottom: 15
-                  }}
-                >
+                <Text style={styles.text}>
                   Numbers of repos: {user.public_repos}
                 </Text>
                 <View>
@@ -174,9 +115,7 @@ class Main extends Component {
             </View>
           )}
           {user && user.message === "Not Found" && (
-            <Text style={{ textAlign: "center" }}>
-              No results for that username
-            </Text>
+            <Text style={styles.text}>No results for that username</Text>
           )}
           <Resume
             modalVisible={modalVisible}
@@ -197,5 +136,44 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 20,
+    marginBottom: 20
+  },
+  text: {
+    textAlign: "center",
+    fontSize: 12,
+    marginBottom: 20,
+    maxWidth: 250
+  },
+  input: {
+    height: 40,
+    width: 200,
+    borderColor: "gray",
+    borderWidth: 1,
+    textAlign: "center",
+    marginBottom: 20
+  },
+  textName: {
+    textAlign: "center",
+    fontSize: 15,
+    marginBottom: 10
+  },
+  bio: {
+    textAlign: "center",
+    fontSize: 12,
+    marginBottom: 10,
+    maxWidth: 250
+  },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 15
   }
 });

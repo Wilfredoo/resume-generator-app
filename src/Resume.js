@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Modal, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import Repos from "./Repos.js";
 
@@ -32,55 +32,55 @@ function Resume(props) {
                   {user && (
                     <View>
                       {user.name ? (
-                        <Text
-                          style={{
-                            fontSize: 25,
-                            color: "#35495e",
-                            fontWeight: "bold"
-                          }}
-                        >
-                          {user.name}
-                        </Text>
+                        <Text style={styles.nameText}>{user.name}</Text>
                       ) : (
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            marginBottom: 15
-                          }}
-                        >
+                        <Text style={styles.noNameText}>
                           This user has no name ¯\_(ツ)_/¯
                         </Text>
                       )}
                       <View style={styles.separator} />
                       {user.blog !== "" && (
-                        <Text
-                          style={{
-                            marginBottom: 10
-                          }}
-                        >
-                          {user.blog}
-                        </Text>
+                        <Text style={styles.text}>{user.blog}</Text>
                       )}
+
                       {user.location !== null && (
-                        <Text
-                          style={{
-                            marginBottom: 10
-                          }}
-                        >
-                          Based in {user.location}
-                        </Text>
+                        <View style={styles.flexContainer}>
+                          <Text>Based in {user.location}</Text>
+                          <Entypo
+                            style={styles.icon}
+                            name="location"
+                            size={20}
+                            color="#ff80b0"
+                          />
+                        </View>
                       )}
-                      <View
-                        style={{
-                          marginBottom: 15
-                        }}
-                      >
-                        <Text>Languages</Text>
+
+                      {user.hireable && (
+                        <View style={styles.flexContainer}>
+                          <Text>Available for hire</Text>
+                          <AntDesign
+                            style={styles.icon}
+                            name="check"
+                            size={20}
+                            color="#ff80b0"
+                          />
+                        </View>
+                      )}
+                      <View style={styles.languages}>
+                        <View style={styles.flexContainer}>
+                          <Text>Languages</Text>
+                          <Entypo
+                            style={styles.icon}
+                            name="keyboard"
+                            size={20}
+                            color="#ff80b0"
+                          />
+                        </View>
                         <View>
                           {languages &&
                             languages.map(data => {
                               return (
-                                <Text>
+                                <Text style={styles.language}>
                                   {" "}
                                   - {data[0]} : {(data[1] * 100).toFixed(2)}%
                                 </Text>
@@ -88,36 +88,9 @@ function Resume(props) {
                             })}
                         </View>
                       </View>
-
-                      {user.hireable && (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginBottom: 15
-                          }}
-                        >
-                          <Text style={{}}>Available for hire</Text>
-                          <AntDesign
-                            style={{ marginLeft: 5 }}
-                            name="check"
-                            size={20}
-                            color="green"
-                          />
-                        </View>
-                      )}
                     </View>
                   )}
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      fontWeight: "bold",
-                      color: "#35495e",
-                      marginTop: 15
-                    }}
-                  >
-                    Popular repositories
-                  </Text>
+                  <Text style={styles.subtitle}>Popular repositories</Text>
                   <Repos repos={repos} />
                 </View>
               </ScrollView>
@@ -146,5 +119,35 @@ const styles = StyleSheet.create({
     borderBottomColor: "#737373",
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 15
+  },
+  nameText: {
+    fontSize: 25,
+    color: "#35495e",
+    fontWeight: "bold"
+  },
+  noNameText: {
+    fontSize: 15,
+    marginBottom: 15
+  },
+  text: {
+    marginBottom: 10
+  },
+  languages: {
+    marginBottom: 15
+  },
+  language: { marginBottom: 6 },
+  flexContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10
+  },
+  icon: {
+    marginLeft: 7
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#35495e",
+    marginTop: 15
   }
 });
