@@ -40,7 +40,6 @@ class Main extends Component {
   };
 
   async getRepos() {
-    console.log("get repos from this user", this.state.user);
     let allRepos = [];
     let languages = [];
     let languagesPercents = [];
@@ -77,7 +76,6 @@ class Main extends Component {
   async generateResume() {
     await this.searchUser();
     if (this.state.user && this.state.user.message === "Not Found") {
-      console.log("cant look at repos of this");
       return;
     }
     this.getRepos();
