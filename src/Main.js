@@ -105,7 +105,9 @@ class Main extends Component {
             style={styles.input}
           />
           {user && user.message === "Not Found" && (
-            <Text style={styles.text}>No results for that username</Text>
+            <Text style={styles.text}>
+              No results for that username ¯\_(ツ)_/¯
+            </Text>
           )}
           <Button
             disabled={
