@@ -1,13 +1,20 @@
 import React from "react";
 import { View, Text, StyleSheet, Modal, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import Repos from "./Repos.js";
 
 function Resume(props) {
   function render() {
-    const { user, modalVisible, repos, languages, closeModal } = props;
+    const {
+      user,
+      modalVisible,
+      repos,
+      languages,
+      closeModal,
+      openRepo
+    } = props;
     return (
       <View style={styles.container}>
         <Modal visible={modalVisible}>
@@ -40,7 +47,15 @@ function Resume(props) {
                       )}
                       <View style={styles.separator} />
                       {user.blog !== "" && (
-                        <Text style={styles.text}>{user.blog}</Text>
+                        <View style={styles.flexContainer}>
+                          <Text>{user.blog}</Text>
+                          <MaterialCommunityIcons
+                            style={styles.icon}
+                            name="web"
+                            size={20}
+                            color="#ff80b0"
+                          />
+                        </View>
                       )}
 
                       {user.location !== null && (
@@ -67,15 +82,17 @@ function Resume(props) {
                         </View>
                       )}
                       <View style={styles.languages}>
-                        <View style={styles.flexContainer}>
-                          <Text>Languages</Text>
-                          <Entypo
-                            style={styles.icon}
-                            name="keyboard"
-                            size={20}
-                            color="#ff80b0"
-                          />
-                        </View>
+                        {languages && (
+                          <View style={styles.flexContainer}>
+                            <Text>Languages</Text>
+                            <Entypo
+                              style={styles.icon}
+                              name="keyboard"
+                              size={20}
+                              color="#ff80b0"
+                            />
+                          </View>
+                        )}
                         <View>
                           {languages &&
                             languages.map(data => {
@@ -91,7 +108,7 @@ function Resume(props) {
                     </View>
                   )}
                   <Text style={styles.subtitle}>Popular repositories</Text>
-                  <Repos repos={repos} />
+                  <Repos repos={repos} openRepo={openRepo} />
                 </View>
               </ScrollView>
             </View>

@@ -5,12 +5,13 @@ import {
   StyleSheet,
   TextInput,
   Button,
-  Image,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  ActivityIndicator
 } from "react-native";
 import Resume from "./Resume.js";
 import calculateLanguagePercents from "./utils/languagePercent.js";
+import { Linking } from "expo";
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback
@@ -28,7 +29,18 @@ class Main extends Component {
     modalVisible: false
   };
 
+  getUsername = value => {
+    this.setState({ username: value }, () => {});
+  };
+
+  searchUser = async () => {
+    await fetch(`http://api.github.com/users/${this.state.username}`)
+      .then(response => response.json())
+      .then(data => this.setState({ user: data }, () => {}));
+  };
+
   async getRepos() {
+    console.log("get repos from this user", this.state.user);
     let allRepos = [];
     let languages = [];
     let languagesPercents = [];
@@ -42,7 +54,12 @@ class Main extends Component {
           let oneRepo = [];
           languages.push(data.language);
           languagesPercents.push(data.language);
-          oneRepo.push(data.name, data.description, data.created_at);
+          oneRepo.push(
+            data.name,
+            data.description,
+            data.created_at,
+            data.html_url
+          );
           allRepos.push(oneRepo);
         })
       );
@@ -57,14 +74,21 @@ class Main extends Component {
     );
   }
 
-  getUser = value => {
-    fetch(`http://api.github.com/users/${value}`)
-      .then(response => response.json())
-      .then(data => this.setState({ user: data }, () => {}));
-  };
+  async generateResume() {
+    await this.searchUser();
+    if (this.state.user && this.state.user.message === "Not Found") {
+      console.log("cant look at repos of this");
+      return;
+    }
+    this.getRepos();
+  }
 
   closeModal = () => {
     this.setState({ modalVisible: false }, () => {});
+  };
+
+  openRepo = url => {
+    return Linking.openURL(url);
   };
 
   render() {
@@ -74,56 +98,35 @@ class Main extends Component {
         <View style={styles.container}>
           <Text style={styles.title}>GitHub Resume Generator</Text>
 
-          <Text style={styles.text}>
-            Feeling curious? Search for a Github user
-          </Text>
+          <Text style={styles.text}>Just search for a Github user</Text>
           <TextInput
-            onChangeText={value => this.getUser(value)}
+            onChangeText={value => this.getUsername(value)}
             placeholder="Enter a username"
             style={styles.input}
           />
-          {user && user.message !== "Not Found" && (
-            <View>
-              {user.name ? (
-                <Text style={styles.textName}>{user.name}</Text>
-              ) : (
-                <Text style={styles.textName}>
-                  This user has no name ¯\_(ツ)_/¯
-                </Text>
-              )}
-              {user.bio && <Text style={styles.bio}>{user.bio}</Text>}
-              <View style={styles.imageContainer}>
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri: user.avatar_url
-                  }}
-                />
-              </View>
-              <View>
-                <Text style={styles.text}>
-                  Numbers of repos: {user.public_repos}
-                </Text>
-                <View>
-                  <Button
-                    color="#0f4c75"
-                    title="Generate Resume"
-                    onPress={() => this.getRepos()}
-                  ></Button>
-                </View>
-              </View>
-            </View>
-          )}
           {user && user.message === "Not Found" && (
             <Text style={styles.text}>No results for that username</Text>
           )}
+          <Button
+            disabled={
+              this.state.username === undefined || this.state.username === ""
+            }
+            color="#0f4c75"
+            title="Generate Resume"
+            onPress={() => this.generateResume()}
+          ></Button>
+
           <Resume
             modalVisible={modalVisible}
             user={user}
             repos={repos}
             closeModal={this.closeModal}
             languages={languages}
+            openRepo={this.openRepo}
           />
+          {!user && !repos && modalVisible && (
+            <ActivityIndicator size="large" color="#0000ff" />
+          )}
         </View>
       </DismissKeyboard>
     );
@@ -144,9 +147,9 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
-    fontSize: 12,
+    fontSize: 15,
     marginBottom: 20,
-    maxWidth: 250
+    maxWidth: 260
   },
   input: {
     height: 40,
@@ -154,7 +157,8 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     textAlign: "center",
-    marginBottom: 20
+    marginBottom: 35,
+    marginTop: 15
   },
   textName: {
     textAlign: "center",
@@ -163,17 +167,13 @@ const styles = StyleSheet.create({
   },
   bio: {
     textAlign: "center",
-    fontSize: 12,
+    fontSize: 15,
     marginBottom: 10,
-    maxWidth: 250
+    maxWidth: 250,
+    fontStyle: "italic"
   },
   imageContainer: {
     alignItems: "center",
     justifyContent: "center"
-  },
-  image: {
-    width: 150,
-    height: 150,
-    marginBottom: 15
   }
 });

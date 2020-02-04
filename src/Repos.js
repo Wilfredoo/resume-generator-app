@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import moment from "moment";
 
 function Repos(props) {
   function render() {
-    const { repos } = props;
+    const { repos, openRepo } = props;
     return (
       <View>
         <View style={styles.separator} />
@@ -12,15 +12,17 @@ function Repos(props) {
           {repos &&
             repos.slice(0, 5).map(data => {
               return (
-                <View style={styles.repo}>
-                  <View style={styles.repoHeader}>
-                    <Text style={styles.repoName}>{data[0]}</Text>
-                    <Text style={styles.text}>
-                      {moment(data[2]).format("YYYY")}
-                    </Text>
+                <TouchableOpacity onPress={() => openRepo(data[3])}>
+                  <View style={styles.repo}>
+                    <View style={styles.repoHeader}>
+                      <Text style={styles.repoName}>{data[0]}</Text>
+                      <Text style={styles.text}>
+                        {moment(data[2]).format("YYYY")}
+                      </Text>
+                    </View>
+                    {data[1] && <Text style={styles.text}>{data[1]}</Text>}
                   </View>
-                  <Text style={styles.text}>{data[1]}</Text>
-                </View>
+                </TouchableOpacity>
               );
             })}
 
