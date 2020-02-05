@@ -80,7 +80,7 @@ export default function Resume({
                       </View>
                     )}
                     <View style={styles.languages}>
-                      {languages.length > 0 && (
+                      {languages && languages.length > 0 && (
                         <View style={styles.flexContainer}>
                           <Text>Languages</Text>
                           <Entypo
