@@ -108,9 +108,7 @@ class Main extends Component {
             </Text>
           )}
           <Button
-            disabled={
-              this.state.username === undefined || this.state.username === ""
-            }
+            disabled={!this.state.username}
             color="#0f4c75"
             title="Generate Resume"
             onPress={() => this.generateResume()}
