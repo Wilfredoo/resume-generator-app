@@ -1,6 +1,6 @@
 # Github Resume Generator
 
-A simple app that generates a resume from a github username - coding challenge for Frontend Developer position at Exozet.
+A simple app that generates a resume from a github username.
 
 ## How to use
 
